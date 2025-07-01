@@ -5,24 +5,29 @@ on: [push]
 jobs:
   test:
     runs-on: ubuntu-latest
-    env:
-      CATKIN_WS: /home/runner/work/catkin_ws
-    steps:
-    - uses: actions/checkout@v2
 
-    - name: Setup ROS
-      uses: ros-tooling/setup-ros@v0.2
-      with:
-        required-ros-distributions: melodic
+    container:
+      image: ros:melodic-ros-base-bionic
+
+    steps:
+     - name: Install dependencies
+      run: |
+        apt update
+        apt install -y sudo python3-pip build-essential \
+                       ros-melodic-catkin ros-melodic-rostest \
+                       python3-rosdep git
+        rosdep init || true
+        rosdep update
 
     - name: Init workspace
       run: |
         source /opt/ros/melodic/setup.bash
-        mkdir -p ${CATKIN_WS}/src && cd ${CATKIN_WS} && catkin_make
-        ln -s ${GITHUB_WORKSPACE} ${CATKIN_WS}/src/
-
+        mkdir -p ~/catkin_ws/src
+        ln -s $GITHUB_WORKSPACE ~/catkin_ws/src/your_package
+        cd ~/catkin_ws
+        rosdep install --from-paths src --ignore-src -r -y
+        catkin_make
     - name: Run tests
       run: |
-        source ${CATKIN_WS}/devel/setup.bash
-        rostest <package> <node.test>
-
+        source ~/catkin_ws/devel/setup.bash
+        xvfb-run -a rostest pimouse_2025 test.launch
