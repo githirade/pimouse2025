@@ -10,24 +10,24 @@ jobs:
       image: ros:melodic-ros-base-bionic
 
     steps:
-     - name: Install dependencies
-      run: |
-        apt update
-        apt install -y sudo python3-pip build-essential \
-                       ros-melodic-catkin ros-melodic-rostest \
-                       python3-rosdep git
-        rosdep init || true
-        rosdep update
+      - name: Install dependencies
+        run: |
+          apt update
+          apt install -y sudo python3-pip build-essential \
+                         ros-melodic-catkin ros-melodic-rostest \
+                         python3-rosdep git
+          rosdep init || true
+          rosdep update
 
-    - name: Init workspace
-      run: |
-        source /opt/ros/melodic/setup.bash
-        mkdir -p ~/catkin_ws/src
-        ln -s $GITHUB_WORKSPACE ~/catkin_ws/src/your_package
-        cd ~/catkin_ws
-        rosdep install --from-paths src --ignore-src -r -y
-        catkin_make
-    - name: Run tests
-      run: |
-        source ~/catkin_ws/devel/setup.bash
-        xvfb-run -a rostest pimouse_2025 test.launch
+      - name: Init workspace
+        run: |
+          source /opt/ros/melodic/setup.bash
+          mkdir -p ~/catkin_ws/src
+          ln -s $GITHUB_WORKSPACE ~/catkin_ws/src/your_package
+          cd ~/catkin_ws
+          rosdep install --from-paths src --ignore-src -r -y
+          catkin_make
+      - name: Run tests
+        run: |
+          source ~/catkin_ws/devel/setup.bash
+          xvfb-run -a rostest pimouse_2025 test.launch
