@@ -20,6 +20,7 @@ jobs:
           rosdep update
 
       - name: Init workspace
+        shell: bash
         run: |
           source /opt/ros/melodic/setup.bash
           mkdir -p ~/catkin_ws/src
