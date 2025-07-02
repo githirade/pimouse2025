@@ -25,7 +25,7 @@ jobs:
         run: |
           source /opt/ros/melodic/setup.bash
           mkdir -p ~/catkin_ws/src
-          ln -s $GITHUB_WORKSPACE ~/catkin_ws/src/your_package
+          ln -s $GITHUB_WORKSPACE ~/catkin_ws/src/pimouse_2025
           cd ~/catkin_ws
           rosdep install --from-paths src --ignore-src -r -y
           catkin_make
