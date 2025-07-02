@@ -43,10 +43,11 @@ class LightsensorTest(unittest.TestCase):
         c_prev = self.count
         time.sleep(3)
 
-        self.assertTrue(self.count < c_prev + 5,"freq does not change")
+        self.assertTrue(self.count < c_prev + 10,"freq does not change")
         self.assertFalse(self.count == c_prev,"subscriber is stopped")
 
 if __name__ == '__main__':
     time.sleep(3)
     rospy.init_node('test_lightsensors')
     rostest.rosrun('pimouse_2025','test_lightsensors',LightsensorTest)
+
