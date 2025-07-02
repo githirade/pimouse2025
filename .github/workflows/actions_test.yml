@@ -1,32 +1,38 @@
-name: pimouse ROS CI
-
-on: [push]
-
 jobs:
   test:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
 
-      - name: Run tests inside ROS melodic container
+      - name: Init ROS workspace inside container
         run: |
-          docker run --rm \
+          docker run --name ros_ci_container -d \
             -v ${{ github.workspace }}:/root/pimouse_2025 \
-            ros:melodic-ros-base-bionic \
-            bash -c "
-              apt update && \
-              apt install -y sudo python3-pip build-essential \
-                             ros-melodic-catkin ros-melodic-rostest \
-                             python3-rosdep git xvfb && \
-              rosdep init || true && \
-              rosdep update && \
-              source /opt/ros/melodic/setup.bash && \
-              mkdir -p /root/catkin_ws/src && \
-              ln -s /root/pimouse_2025 /root/catkin_ws/src/pimouse_2025 && \
-              cd /root/catkin_ws && \
-              rosdep install --from-paths src --ignore-src -r -y && \
-              catkin_make && \
-              source devel/setup.bash && \
-              xvfb-run -a rostest pimouse_2025 test.launch
-            "
+            ros:melodic-ros-base-bionic tail -f /dev/null
+
+          docker exec ros_ci_container bash -c "
+            apt update && \
+            apt install -y sudo python3-pip build-essential \
+                           ros-melodic-catkin ros-melodic-rostest \
+                           python3-rosdep git xvfb && \
+            rosdep init || true && \
+            rosdep update && \
+            source /opt/ros/melodic/setup.bash && \
+            mkdir -p /root/catkin_ws/src && \
+            ln -s /root/pimouse_2025 /root/catkin_ws/src/pimouse_2025 && \
+            cd /root/catkin_ws && \
+            rosdep install --from-paths src --ignore-src -r -y && \
+            catkin_make
+          "
+
+      - name: Run tests inside container
+        run: |
+          docker exec ros_ci_container bash -c "
+            source /opt/ros/melodic/setup.bash && \
+            source /root/catkin_ws/devel/setup.bash && \
+            xvfb-run -a rostest pimouse_2025 test.launch
+          "
+
+      - name: Cleanup
+        if: always()
+        run: docker rm -f ros_ci_container
