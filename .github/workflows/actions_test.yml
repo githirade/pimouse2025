@@ -15,7 +15,8 @@ jobs:
           apt update
           apt install -y sudo python3-pip build-essential \
                          ros-melodic-catkin ros-melodic-rostest \
-                         python3-rosdep git
+                         python3-rosdep git \
+                         xvfb
           rosdep init || true
           rosdep update
 
