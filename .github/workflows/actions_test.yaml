@@ -13,7 +13,6 @@ jobs:
           docker run --name ros_ci_container -d \
             -v ${{ github.workspace }}:/root/pimouse_2025 \
             ros:melodic-ros-base-bionic tail -f /dev/null
-
           docker exec ros_ci_container bash -c "
             apt update && \
             apt install -y sudo python3-pip build-essential \
@@ -29,6 +28,17 @@ jobs:
             catkin_make
           "
 
+
+      - name: Create dummy /dev/rt* devices
+        run: |
+          docker exec ros_ci_container bash -c "
+            sudo touch /dev/rt{buzzer,motor,motoren,motor_raw_{l,r}}0
+            sudo chmod 666 /dev/rt{buzzer,motor,motoren,motor_raw_{l,r}}0
+            echo "0 0 0 0" | sudo tee /dev/rtlightsensor0
+            sudo chmod 666 /dev/rtlightsensor0
+            echo "0" | sudo tee /dev/rtswitch{0,1,2}
+            sudo chmod 666 /dev/rtswitch{0,1,2}
+          "
       - name: Run tests inside container
         run: |
           docker exec ros_ci_container bash -c "
