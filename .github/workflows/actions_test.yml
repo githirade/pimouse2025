@@ -29,6 +29,7 @@ jobs:
           rosdep install --from-paths src --ignore-src -r -y
           catkin_make
       - name: Run tests
+        shell: bash
         run: |
           source ~/catkin_ws/devel/setup.bash
           xvfb-run -a rostest pimouse_2025 test.launch
