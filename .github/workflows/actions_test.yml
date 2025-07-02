@@ -10,6 +10,7 @@ jobs:
       image: ros:melodic-ros-base-bionic
 
     steps:
+      - uses: actions/checkout@v3
       - name: Install dependencies
         run: |
           apt update
@@ -19,8 +20,6 @@ jobs:
                          xvfb
           rosdep init || true
           rosdep update
-
-      - uses: actions/checkout@v2
 
       - name: Init workspace
         shell: bash
