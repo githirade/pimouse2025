@@ -6,32 +6,27 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    container:
-      image: ros:melodic-ros-base-bionic
-
     steps:
       - uses: actions/checkout@v3
-      - name: Install dependencies
-        run: |
-          apt update
-          apt install -y sudo python3-pip build-essential \
-                         ros-melodic-catkin ros-melodic-rostest \
-                         python3-rosdep git \
-                         xvfb
-          rosdep init || true
-          rosdep update
 
-      - name: Init workspace
-        shell: bash
+      - name: Run tests inside ROS melodic container
         run: |
-          source /opt/ros/melodic/setup.bash
-          mkdir -p ~/catkin_ws/src
-          ln -s $GITHUB_WORKSPACE ~/catkin_ws/src/pimouse_2025
-          cd ~/catkin_ws
-          rosdep install --from-paths src --ignore-src -r -y
-          catkin_make
-      - name: Run tests
-        shell: bash
-        run: |
-          source ~/catkin_ws/devel/setup.bash
-          xvfb-run -a rostest pimouse_2025 test.launch
+          docker run --rm \
+            -v ${{ github.workspace }}:/root/pimouse_2025 \
+            ros:melodic-ros-base-bionic \
+            bash -c "
+              apt update && \
+              apt install -y sudo python3-pip build-essential \
+                             ros-melodic-catkin ros-melodic-rostest \
+                             python3-rosdep git xvfb && \
+              rosdep init || true && \
+              rosdep update && \
+              source /opt/ros/melodic/setup.bash && \
+              mkdir -p /root/catkin_ws/src && \
+              ln -s /root/pimouse_2025 /root/catkin_ws/src/pimouse_2025 && \
+              cd /root/catkin_ws && \
+              rosdep install --from-paths src --ignore-src -r -y && \
+              catkin_make && \
+              source devel/setup.bash && \
+              xvfb-run -a rostest pimouse_2025 test.launch
+            "
