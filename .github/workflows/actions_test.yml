@@ -20,6 +20,8 @@ jobs:
           rosdep init || true
           rosdep update
 
+      - uses: actions/checkout@v2
+
       - name: Init workspace
         shell: bash
         run: |
