@@ -22,7 +22,7 @@ def exec_music(goal):
         fb.remaining_steps = len(goal.freqs) - i
         music.publish_feedback(fb)
 
-        if music is_preempt_requested():
+        if music.is_preempt_requested():
             write_freq(0)
             r.finished = False
             music.set_preempted(r)
