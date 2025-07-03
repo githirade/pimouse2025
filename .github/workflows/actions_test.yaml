@@ -37,7 +37,7 @@ jobs:
             sudo chmod 666 /dev/rt{buzzer,motor,motoren,motor_raw_{l,r}}0
             sudo bash -c 'echo \"0 0 0 0\" > /dev/rtlightsensor0'
             sudo chmod 666 /dev/rtlightsensor0
-            sudo echo "0" > /dev/rtswitch{0,1,2}'
+            sudo echo "0" > /dev/rtswitch{0,1,2}
             sudo chmod 666 /dev/rtswitch{0,1,2}
           "
       - name: Run tests inside container
