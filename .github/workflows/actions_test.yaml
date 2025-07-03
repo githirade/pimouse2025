@@ -32,12 +32,12 @@ jobs:
       - name: Create dummy /dev/rt* devices
         run: |
           docker exec ros_ci_container bash -c "
-            source /opt/ros/melodic/setup.bash && \
-            sudo touch /dev/rt{buzzer,motor,motoren,motor_raw_{l,r}}0 && \
-            sudo chmod 666 /dev/rt{buzzer,motor,motoren,motor_raw_{l,r}}0 && \
-            sudo bash -c 'echo \"0 0 0 0\" > /dev/rtlightsensor0' && \
-            sudo chmod 666 /dev/rtlightsensor0 && \
-            echo "0" | sudo tee /dev/rtswitch{0,1,2} && \
+            source /opt/ros/melodic/setup.bash
+            sudo touch /dev/rt{buzzer,motor,motoren,motor_raw_{l,r}}0
+            sudo chmod 666 /dev/rt{buzzer,motor,motoren,motor_raw_{l,r}}0
+            sudo bash -c 'echo \"0 0 0 0\" > /dev/rtlightsensor0'
+            sudo chmod 666 /dev/rtlightsensor0
+            sudo bash -c 'echo \"0\" > /dev/rtswitch{0,1,2}
             sudo chmod 666 /dev/rtswitch{0,1,2}
           "
       - name: Run tests inside container
@@ -45,8 +45,6 @@ jobs:
           docker exec ros_ci_container bash -c "
             source /opt/ros/melodic/setup.bash && \
             source /root/catkin_ws/devel/setup.bash && \
-            ls -l /dev/rtlightsensor0 || echo 'no file' && \
-            cat /dev/rtlightsensor0 || echo 'cannot read' && \
             xvfb-run -a rostest pimouse_2025 test.launch
           "
 
