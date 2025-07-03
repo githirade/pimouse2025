@@ -45,8 +45,8 @@ jobs:
           docker exec ros_ci_container bash -c "
             source /opt/ros/melodic/setup.bash && \
             source /root/catkin_ws/devel/setup.bash && \
-            ls -l /dev/rtlightsensor0 || echo 'no file' && \
-            cat /dev/rtlightsensor0 || echo 'cannot read' && \
+            ls -l /dev/rtbuzzer0 || echo 'no file' && \
+            cat /dev/rtbuzzer0 || echo 'cannot read' && \
             xvfb-run -a rostest pimouse_2025 test.launch
           "
 
