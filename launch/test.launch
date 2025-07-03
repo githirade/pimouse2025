@@ -1,6 +1,8 @@
 <launch>
   <node pkg="pimouse_2025" name="buzzer" type="buzzer.py" required="true" />
   <node pkg="pimouse_2025" name="lightsensors" type="lightsensors.py" required="true" />
+  <node pkg="pimouse_2025" name="motors" type="motors.py" required="true" />
   <test test-name="test_buzzer" pkg="pimouse_2025" type="test_buzzer.py" />
   <test test-name="test_lightsensors" pkg="pimouse_2025" type="test_lightsensors.py" />
+  <test test-name="test_motors" pkg="pimouse_2025" type="test_motors.py" time-limit="60.0" />
 </launch>
