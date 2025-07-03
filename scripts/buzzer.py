@@ -27,7 +27,7 @@ def exec_music(goal):
             r.finished = False
             music.set_preempted(r)
             return
-        write_freqs(f)
+        write_freq(f)
         rospy.sleep(1.0 if i >= len(goal.durations) else goal.durations[i])
     r.finished = True
     music.set_succeeded(r)
