@@ -14,17 +14,17 @@ jobs:
             -v ${{ github.workspace }}:/root/pimouse_2025 \
             ros:melodic-ros-base-bionic tail -f /dev/null
           docker exec ros_ci_container bash -c "
-            apt update && \
+            apt update
             apt install -y sudo python3-pip build-essential \
                            ros-melodic-catkin ros-melodic-rostest \
                            python3-rosdep git xvfb && \
-            rosdep init || true && \
-            rosdep update && \
-            source /opt/ros/melodic/setup.bash && \
-            mkdir -p /root/catkin_ws/src && \
-            ln -s /root/pimouse_2025 /root/catkin_ws/src/pimouse_2025 && \
-            cd /root/catkin_ws && \
-            rosdep install --from-paths src --ignore-src -r -y && \
+            rosdep init || true
+            rosdep update
+            source /opt/ros/melodic/setup.bash
+            mkdir -p /root/catkin_ws/src
+            ln -s /root/pimouse_2025 /root/catkin_ws/src/pimouse_2025
+            cd /root/catkin_ws
+            rosdep install --from-paths src --ignore-src -r -y
             catkin_make
           "
 
@@ -37,14 +37,14 @@ jobs:
             sudo chmod 666 /dev/rt{buzzer,motor,motoren,motor_raw_{l,r}}0
             sudo bash -c 'echo \"0 0 0 0\" > /dev/rtlightsensor0'
             sudo chmod 666 /dev/rtlightsensor0
-            sudo bash -c 'echo \"0\" > /dev/rtswitch{0,1,2}
+            sudo bash -c 'echo \"0\" > /dev/rtswitch{0,1,2}'
             sudo chmod 666 /dev/rtswitch{0,1,2}
           "
       - name: Run tests inside container
         run: |
           docker exec ros_ci_container bash -c "
-            source /opt/ros/melodic/setup.bash && \
-            source /root/catkin_ws/devel/setup.bash && \
+            source /opt/ros/melodic/setup.bash
+            source /root/catkin_ws/devel/setup.bash
             xvfb-run -a rostest pimouse_2025 test.launch
           "
 
